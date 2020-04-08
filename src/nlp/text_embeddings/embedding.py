@@ -12,10 +12,10 @@ class EmbeddingAlgorithm(ABC):
 
     def __init__(self, corpus: Corpus, embedding: Union[None, np.ndarray, Tensor, Embedding] = None) -> None:
         """
-        Abstract class, which represents an interface for different konds of embedding algorithms like character -,
+        Abstract class, which represents an interface for different kinds of embedding algorithms like character -,
         word - or document embeddings. The embedding algorithms combine test representation (in form of a corpus Object)
         with a numerical representation (in form of an embedding layer). It defines abstract methods for training the
-        embedding layer with respect to a provided corpus and for computing similarites between embeddings.
+        embedding layer with respect to a provided corpus and for computing similarities between embeddings.
 
         Parameters
         ----------
@@ -181,12 +181,12 @@ class EmbeddingAlgorithm(ABC):
         Returns
         -------
             similarity_list: List of tuples, representing the most similar words. The tuple contains the index of the
-                             word in the vocabulary dictionary, the word itsself as string representation as well as the
+                             word in the vocabulary dictionary, the word itself as string representation as well as the
                              similarity value computed by the similarity function for comparing word similarities.
         """
 
         # convert the positive and negative text representations into their indices
-        positive, negative = self.compute_index_representation(positive), self.compute_index_representation(negative)
+        positive, negative = self.compute_index_list(positive), self.compute_index_list(negative)
 
         # compute the similarity for the input for each word, which is not in the positive, negative or token_list list
         similarity_list = []
@@ -200,7 +200,7 @@ class EmbeddingAlgorithm(ABC):
 
                 # Distance between [sum(positive words) - sum(negative words)] and [index] (index of our current word)
                 # is equal to the distance between [sum(positive words)] and [sum((index + negative words)]
-                # therefore we comine the current word with the negative list in order to compute the distance
+                # therefore we combine the current word with the negative list in order to compute the distance
                 neg = [].extend(negative).append(index)
                 similarity_score = self.compute_similarity(positive, neg)
                 similarity_list.append((index, self.corpus.voc.index2word[index], similarity_score))
