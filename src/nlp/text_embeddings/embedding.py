@@ -96,7 +96,7 @@ class EmbeddingAlgorithm(ABC):
             self._embedding = embedding
             num_embedding_units, dim = self._embedding.weight.data.size()
         else:
-            # if the embedding is provided as None, initalize everything as None
+            # if the embedding is provided as None, initialize everything as None
             self._embedding, num_embedding_units, dim = None, None, None
 
         # store the dimension and the number of embedding units as attributes of the class
@@ -169,12 +169,12 @@ class EmbeddingAlgorithm(ABC):
         method computes its similarity based on the vector representation the embeddings, which correspond to the
         provided text representation.
 
-        For the typical example like "king" - "man" + "women" = x ? (where the word queen should be the correct asnwere)
+        For the typical example like "king" - "man" + "women" = x ? (where the word queen should be the correct answer)
         we can provide as positive list ["king", "woman"] and as negative list ["man"].
 
         Parameters
         ----------
-        positive: List of words, which should be considered as positve in the computation of the most similar words.
+        positive: List of words, which should be considered as positive in the computation of the most similar words.
         negative: List of words, which should be considered as negative in the computation of the most similar words.
         n: Number of most similar words, which should be computed.
 
