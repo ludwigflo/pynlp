@@ -59,7 +59,7 @@ def create_date_time_string() -> str:
     return now
 
 
-def init_experiment_dir(dir_root, tb_log: bool = False, tb_log_names: Union[None, list] = None) -> tuple:
+def init_experiment_dir(dir_root, tb_log: bool = False, tb_log_names: Union[None, List[str]] = None) -> tuple:
     """
     Creates a new directory, in which results and logs of a new experiment can be stored.
 
