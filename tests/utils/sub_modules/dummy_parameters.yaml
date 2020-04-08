@@ -1,0 +1,7 @@
+parameter1: 10
+parameter2: 3.74
+parameter3: 'Hello World'
+parameter4: [1, 2, 3, 'test string']
+parameter_group:
+  subgroup1: 10
+  subgroup2: ['another', 'list']

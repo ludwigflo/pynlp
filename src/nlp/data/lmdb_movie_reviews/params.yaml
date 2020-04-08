@@ -1,0 +1,13 @@
+preprocessing:
+  language: 'english'
+  stem_sentence: True
+  remove_stop_words: True
+  remove_punctuation: True
+  lemmatize_sentence: False
+  lower_case_sentence: True
+  add_start_and_end_tokens: False
+  remove_non_alpha_numeric_characters: True
+
+corpus:
+  loading_type: 'object'  # one of 'folder', 'object', 'list' or 'None'
+  path: 'test/unlabeledTrainData.pickl'
