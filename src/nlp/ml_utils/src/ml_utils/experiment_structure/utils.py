@@ -1,4 +1,4 @@
-from ml_utils.logging.tb_log import Logger
+from ..logging.tb_log import Logger
 from typing import Union, List
 from datetime import datetime
 import shutil
