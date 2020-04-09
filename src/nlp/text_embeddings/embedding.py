@@ -231,6 +231,5 @@ class EmbeddingAlgorithm(ABC):
         """
 
         with open(file_name, 'rb') as f:
-            # load the provided pickle file
             embedding_object = pickle.load(f)
         return embedding_object
