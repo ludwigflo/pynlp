@@ -19,12 +19,15 @@ corpus:
 
 data_loader:
   # determines, how the data split is performed (one of 'cross_validation', 'simple_split')
-  split: 'cross validation'
+  split: 'cross_validation'
 
   # required, if split == cross_validation
   cross_validation:
-    k: 5
-  # required, if split == simple_split
-  simple_split:
+    k: 25
+    # required, if split == simple_split
+    simple_split:
     train_split: 0.8
     val_split: 0.1
+
+  embedding_path: '/media/data1/flo/nlp/src/nlp/data/lmdb_movie_reviews/test/labeledTrainData.embd'
+  label_path: '/media/data1/flo/nlp/src/nlp/data/lmdb_movie_reviews/test/labeledTrainData.csv'
