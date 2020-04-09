@@ -29,13 +29,16 @@ data_loader:
     train_split: 0.8
     val_split: 0.1
 
+  batch_size: 8
+
   embedding_path: '/media/data1/flo/nlp/src/nlp/data/lmdb_movie_reviews/test/labeledTrainData.embd'
   label_path: '/media/data1/flo/nlp/src/nlp/data/lmdb_movie_reviews/test/labeledTrainData.csv'
-  update_embeddings: False
+
 
 training:
   num_epochs: 5
   num_iterations: 20
+  update_embeddings: False
   optimizer:
     lr: 1e-4
     betas: [0.9, 0.999]
