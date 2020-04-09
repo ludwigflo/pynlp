@@ -230,6 +230,9 @@ class EmbeddingAlgorithm(ABC):
             file_name: File name, under which the EmbeddingAlgorithm object is saved.
         """
 
+        print('Loading embeddings...')
         with open(file_name, 'rb') as f:
             embedding_object = pickle.load(f)
+        print('Done...')
+
         return embedding_object
