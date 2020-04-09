@@ -5,12 +5,12 @@ import random
 import pickle
 
 
-class DataLoader(ABC):
+class DataLoaderInterface(ABC):
 
     @abstractmethod
     def __init__(self, total_num_data: int, params: dict, shuffle_data: bool=True):
         """
-        Constructor of the Data Loader Class.
+        Constructor of the DataLoaderInterface Class.
 
         Parameters
         ----------
@@ -21,7 +21,7 @@ class DataLoader(ABC):
 
         # get the parameters, which define the data split
         split = params['data_loader']['split']
-        assert split in ['cross validation', 'simple_split'], "Split must be 'cross validation' or 'simple split'"
+        assert split in ['cross_validation', 'simple_split'], "Split must be 'cross_validation' or 'simple_split'"
 
         # compute and store the data split and whether cross validation was performed or not.
         if split == 'cross_validation':
@@ -189,7 +189,7 @@ class DataLoader(ABC):
             pickle.dump(self, f)
 
     @staticmethod
-    def load_object(path: str) -> 'DataLoader':
+    def load_object(path: str) -> 'DataLoaderInterface':
         """
         Loads a DataLoader object, which is stored in a certain path.
 
