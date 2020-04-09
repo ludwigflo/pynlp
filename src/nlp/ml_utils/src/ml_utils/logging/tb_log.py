@@ -1,3 +1,4 @@
+from..utils import suppress_stdout
 import matplotlib.pyplot as plt
 import tensorflow as tf
 from typing import Dict
@@ -19,9 +20,10 @@ class Logger(object):
         Parameters
         ----------
         log_dir: Path, in which the Logger should store its logs.
+        cmap:
         """
 
-        self.writer = tf.summary.FileWriter(log_dir)
+        self.writer = tf.summary.create_file_writer(log_dir)
         self.cmap = cmap
 
     def log_scalar(self, tags: list, values: list, step: int) -> None:
