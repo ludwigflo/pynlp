@@ -36,8 +36,8 @@ data_loader:
 
 
 training:
-  num_epochs: 5
-  num_iterations: 20
+  num_epochs: 200
+  num_iterations: 150
   update_embeddings: False
   optimizer:
     lr: 1e-4
