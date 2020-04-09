@@ -1,0 +1,30 @@
+experiment:
+  root_dir: './'
+  tb_log: True
+  tb_log_names: ['train_logger', 'validation_logger']
+
+preprocessing:
+  language: 'english'
+  stem_sentence: True
+  remove_stop_words: True
+  remove_punctuation: True
+  lemmatize_sentence: False
+  lower_case_sentence: True
+  add_start_and_end_tokens: False
+  remove_non_alpha_numeric_characters: True
+
+corpus:
+  loading_type: 'object'  # one of 'folder', 'object', 'list' or 'None'
+  path: 'test/unlabeledTrainData.pickl'
+
+data_loader:
+  # determines, how the data split is performed (one of 'cross_validation', 'simple_split')
+  split: 'cross validation'
+
+  # required, if split == cross_validation
+  cross_validation:
+    k: 5
+  # required, if split == simple_split
+  simple_split:
+    train_split: 0.8
+    val_split: 0.1
