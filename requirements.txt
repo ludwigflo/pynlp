@@ -19,7 +19,7 @@ matplotlib==3.2.1
 # Editable Git install with no remote (nlp==0.0.post0.dev1+g72079dc.dirty)
 -e /media/data1/flo/nlp/src
 nltk==3.4.5
-numpy==1.18.2
+numpy==1.16.0
 oauthlib==3.1.0
 opt-einsum==3.2.0
 pandas==1.0.3
