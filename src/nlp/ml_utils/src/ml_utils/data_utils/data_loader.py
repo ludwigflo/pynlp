@@ -106,7 +106,7 @@ class DataLoaderInterface(ABC):
 
             if num_remaining_samples > 0:
                 if rand:
-                    indices = random.choice(val_set, k = num_remaining_samples)
+                    indices = random.choices(val_set, k = num_remaining_samples)
                 else:
                     indices = val_set[num_iterations*batch_size:]
                 samples = self.load_data(indices)
@@ -147,7 +147,7 @@ class DataLoaderInterface(ABC):
 
             if num_remaining_samples > 0:
                 if rand:
-                    indices = random.choice(test_set, k=num_remaining_samples)
+                    indices = random.choices(test_set, k=num_remaining_samples)
                 else:
                     indices = test_set[num_iterations*batch_size:]
                 samples = self.load_data(indices)
@@ -170,7 +170,7 @@ class DataLoaderInterface(ABC):
         """
 
         if rand:
-            indices = random.choice(data_set, k=batch_size)
+            indices = random.choices(data_set, k=batch_size)
         else:
             indices = data_set[iteration * batch_size: (iteration + 1) * batch_size]
         samples = self.load_data(indices)
