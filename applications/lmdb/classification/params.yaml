@@ -30,7 +30,7 @@ data_loader:
     train_split: 0.8
     val_split: 0.1
 
-  batch_size: 8
+  batch_size: 4
 
   embedding_path: '/media/data1/flo/nlp/src/nlp/data/lmdb_movie_reviews/test/labeledTrainData.embd'
   label_path: '/media/data1/flo/nlp/src/nlp/data/lmdb_movie_reviews/test/labeledTrainData.csv'
