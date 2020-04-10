@@ -49,7 +49,7 @@ class TestBagOfWords(unittest.TestCase):
 
     def test_constructor_property_types(self):
         """
-        Test, if the property types after object instanciation are correct.
+        Test, if the property types after object instantiation are correct.
         """
         print("test_constructor_property_types")
         self.assertIs(type(self.bow.embedding), nn.Embedding)

@@ -1,0 +1,13 @@
+preprocessing:
+  language: 'german'
+  stem_sentence: False
+  remove_stop_words: False
+  remove_punctuation: True
+  lemmatize_sentence: False
+  lower_case_sentence: False
+  add_start_and_end_tokens: False
+  remove_non_alpha_numeric_characters: False
+
+corpus:
+  loading_type: 'list'  # one of 'folder', 'object', 'list' or 'None'
+  path: 'Nonel'
