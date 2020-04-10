@@ -37,13 +37,18 @@ class Logger(object):
         """
 
         # iterate through the tags and values
-        for i, tag, value in enumerate(zip([tags, values])):
+        for i, tag in enumerate(tags):
 
-            # create a tensorboard summary
-            summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
+            value = values[i]
 
-            # add the tensorboard summary to the writer
-            self.writer.add_summary(summary, step)
+            with self.writer.as_default():
+                tf.summary.scalar(tag, value, step)
+
+            # # create a tensorboard summary
+            #  summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
+
+            # # add the tensorboard summary to the writer
+            # self.writer.add_summary(summary, step)
 
         # write the scalar values
         self.writer.flush()
