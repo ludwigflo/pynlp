@@ -248,7 +248,7 @@ def main(params: dict) -> None:
 
     # initialize a new pytorch model
     feature_size = data_loader.embeddings.embedding.weight.data.size()[1]
-    model = models.LinearClassifier(feature_size).to(device)
+    model = models.SimpleClassifier(feature_size).to(device)
 
     # create an optimizer
     if update_embeddings:
