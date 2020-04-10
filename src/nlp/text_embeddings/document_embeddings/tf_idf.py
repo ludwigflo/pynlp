@@ -194,6 +194,3 @@ class TfIdf(EmbeddingAlgorithm):
         # compute the cosine similarity between these average vectors
         similarity = cosine_similarity(doc1, doc2)
         return similarity
-
-
-
