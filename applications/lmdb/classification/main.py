@@ -3,10 +3,35 @@ from nlp.utils import read_parameter_file
 import nlp.ml_utils as ml_utils
 from typing import Union, List
 from torch.optim import Adam
-import numpy as np
 import models
 import torch
 import csv
+import os
+
+
+# TODO: Integrate training on multiple GPUs
+def evaluate_prediction(prediction: torch.Tensor, target: torch.Tensor) -> tuple:
+    """
+
+    Parameters
+    ----------
+    prediction
+    target
+
+    Returns
+    -------
+
+    """
+
+    prediction[prediction > 0.5] = 1
+    prediction[prediction <= 0.5] = 0
+
+    pos = 0
+    num_preds = prediction.size()[0]
+    for i in range(num_preds):
+        if prediction[i].view(-1) == target[i]:
+            pos += 1
+    return pos, num_preds
 
 
 class DataLoader(ml_utils.data_loader.DataLoaderInterface):
@@ -87,14 +112,115 @@ def initialize_experiment(params: dict) -> Union[tuple, str]:
         return exp_root_dir
 
 
+def train_epoch(train_loader, model, optim, num_iterations, device) -> tuple:
+    """
+    Performs one single train epoch.
+
+    Parameters
+    ----------
+    train_loader: Data loader of the training data.
+    model: Pytorch model, which should be trained.
+    optim: Optimizer of the model.
+    num_iterations: Number of single iterations in the train epoch.
+    device: Which device should dbe used for the computation operations.
+
+    Returns
+    -------
+    avg_loss: Average loss value of the training epoch.
+    """
+
+    avg_loss = 0
+    total_num = 0
+    total_correct = 0
+    for i, (data, label) in enumerate(train_loader):
+
+        # utilize the gpu, if possible
+        data, label = data.float().to(device), label.float().to(device)
+
+        # compute the model's predictions
+        prediction = model(data)
+
+        # compute the loss
+        loss = ml_utils.bce_loss_pytorch(prediction, label, logits=False)
+        avg_loss += loss.detach().cpu().numpy().item()
+
+        # backpropagate the loss and update the weights
+        optim.zero_grad()
+        loss.backward()
+        optim.step()
+
+        # evaluate the predictions in order to prepare the computation of the accuracy
+        correct, num = evaluate_prediction(prediction, label)
+        total_correct += correct
+        total_num += num
+
+        # abort criterion
+        if i == num_iterations:
+            break
+
+    # compute and return the average train loss as well as the accuracy
+    avg_acc = float(total_correct)/float(total_num)
+    avg_loss /= num_iterations
+    return avg_loss, avg_acc
+
+
+def val_epoch(val_loader, model, device) -> tuple:
+    """
+    Performs one single train epoch.
+
+    Parameters
+    ----------
+    val_loader: Data loader of the validation data.
+    model: Pytorch model, which should be trained.
+    device: Which device should dbe used for the computation operations.
+
+    Returns
+    -------
+    avg_loss: Average loss value of the training epoch.
+    """
+    with torch.no_grad():
+        avg_loss = 0
+        num_iter = 1
+        total_num = 0
+        total_correct = 0
+        for i, ((data, label), done) in enumerate(val_loader):
+
+            # utilize the gpu, if possible
+            data, label = data.float().to(device), label.float().to(device)
+
+            # compute the model's predictions
+            prediction = model(data)
+
+            # compute the loss and update the average loss
+            loss = ml_utils.bce_loss_pytorch(prediction, label, logits=False)
+            avg_loss += loss.detach().cpu().numpy().item()
+
+            # evaluate the predictions in order to prepare the computation of the accuracy
+            correct, num = evaluate_prediction(prediction, label)
+            total_correct += correct
+            total_num += num
+
+            # abort criterion
+            if done:
+                num_iter = i + 1
+                break
+
+        # compute and return the average train loss as well as the accuracy
+        avg_acc = float(total_correct) / float(total_num)
+        avg_loss /= num_iter
+        return avg_loss, avg_acc
+
+
 def main(params: dict) -> None:
     """
     Main function for training.
-    TODO: Add embedding update to optimizer
+
     Parameters
     ----------
     params: Training parameters.
     """
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     # get some parameters
     num_epochs = params['training']['num_epochs']
@@ -105,49 +231,42 @@ def main(params: dict) -> None:
     betas = tuple([float(x) for x in params['training']['optimizer']['betas']])
 
     # create a new experiment directory
-    # root_dir, logger_list = initialize_experiment(params)
+    root_dir, logger_list = initialize_experiment(params)
+    tb_tags = ['BCE Loss', 'Accuracy']
     print('\n\nInitialized experiment directory')
+
+    # show current working directory and copy all required files into the experiment directory
+    current_dir = os.getcwd()
+    files = [x for x in os.listdir(current_dir) if os.path.isfile(x)]
+    ml_utils.copy_files(root_dir+'src/', files)
 
     # create a data loader object and extract the train and validation loaders
     data_loader = DataLoader(25000, params, shuffle_data = True)
     data_loader.embeddings.set_embedding_gradient(update_embeddings)
     train_loader = data_loader.train_generator(batch_size = batch_size)
+    val_loader = data_loader.val_generator(batch_size=1, rand=False)
 
     # initialize a new pytorch model
     feature_size = data_loader.embeddings.embedding.weight.data.size()[1]
-    model = models.LinearClassifier(feature_size)
+    model = models.LinearClassifier(feature_size).to(device)
 
     # create an optimizer
-    optim = Adam(model.parameters(), lr = learning_rate, betas = betas)
-
-    # utilize the gpu, if possible
-    cuda = torch.cuda.is_available()
-    if cuda:
-        model = model.cuda()
+    if update_embeddings:
+        params = list(model.parameters()) + list(data_loader.embeddings.embedding.parameters())
+        optim = Adam(params, lr = learning_rate, betas = betas)
+    else:
+        optim = Adam(model.parameters(), lr = learning_rate, betas = betas)
 
     # train the model
     for epoch in range(num_epochs):
-        for i, (data, label) in enumerate(train_loader):
+        avg_val_loss, avg_val_acc = val_epoch(val_loader, model, device)
+        avg_train_loss, avg_train_acc = train_epoch(train_loader, model, optim, num_iterations, device)
+        print('Epoch: {0} Train Loss: {1}  Validation Loss: {2}'.format(epoch, avg_train_loss, avg_val_loss))
+        print('  Train Accuracy: {0}  Validation Accuracy: {1}'.format(avg_train_acc, avg_val_acc))
+        print()
 
-            # utilize the gpu, if possible
-            if cuda:
-                data, label = data.float().cuda(), label.float().cuda()
-
-            # compute the model's predictions
-            prediction = model(data)
-
-            # compute the loss
-            loss = ml_utils.bce_loss_pytorch(prediction, label, logits = False)
-            print(epoch, i, np.asscalar(loss.detach().cpu().numpy()))
-
-            # backpropagate the loss and update the weights
-            optim.zero_grad()
-            loss.backward()
-            optim.step()
-
-            # abort criterion
-            if i == num_iterations:
-                break
+        logger_list[0].log_scalar(tb_tags, [avg_train_loss, avg_train_acc], epoch)
+        logger_list[1].log_scalar(tb_tags, [avg_val_loss, avg_val_acc], epoch)
 
 if __name__ == '__main__':
 
