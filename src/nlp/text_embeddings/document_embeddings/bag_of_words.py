@@ -2,7 +2,6 @@ from nlp.utils import compute_document_word_count, cosine_similarity
 from nlp.text_embeddings.embedding import EmbeddingAlgorithm
 from torch import LongTensor, Tensor
 from nlp.data.corpus import Corpus
-from torch.nn import Embedding
 from typing import Union, List
 import numpy as np
 import sys
@@ -18,7 +17,7 @@ class BagOfWords(EmbeddingAlgorithm):
         corpus: Corpus, for which the bag of words representation should be computed.
         """
 
-        # call the constructor of the super class in order to initialize the BagOfWords class as EmbeddingAlgorithmus
+        # call the constructor of the super class in order to initialize the BagOfWords class as EmbeddingAlgorithm
         super(BagOfWords, self).__init__(corpus, None)
 
         # compute the bag of words embeddings
