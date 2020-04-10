@@ -126,7 +126,6 @@ class TfIdf(EmbeddingAlgorithm):
             embedding[0, word_index] = tf_idf_value
         return embedding
 
-
     def compute_embedding(self, *args, **kwargs) -> np.ndarray:
         """
         Computes the tf-idf representation of the current corpus.
