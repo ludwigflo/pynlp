@@ -30,6 +30,10 @@ class TfIdf(EmbeddingAlgorithm):
         # compute the bag of words embeddings
         self.embedding = self.compute_embedding()
 
+    @staticmethod
+    def init_dict():
+        return 0
+
     def compute_tf_values(self, document: List[List[str]]):
         """
 
@@ -42,7 +46,7 @@ class TfIdf(EmbeddingAlgorithm):
         tf_dict: Dictionary containing the term frequencies.
         """
 
-        tf_dict = defaultdict(lambda: 0)
+        tf_dict = defaultdict(self.init_dict)
 
         # iterate through the sentences in the document
         total_num_words = 0
@@ -74,7 +78,7 @@ class TfIdf(EmbeddingAlgorithm):
         """
 
         num_docs = len(self.corpus)
-        idf_dict = defaultdict(lambda : 0)
+        idf_dict = defaultdict(self.init_dict)
 
         # iterate through the corpus and check, which words occur in the current document.
         for document in self.corpus.corpus:
