@@ -10,4 +10,4 @@ preprocessing:
 
 corpus:
   loading_type: 'object'  # one of 'folder', 'object', 'list' or 'None'
-  path: 'test/unlabeledTrainData.pickl'
+  path: 'corpus/unlabeledTrainData.pickl'
