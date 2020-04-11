@@ -27,6 +27,9 @@ class TfIdf(EmbeddingAlgorithm):
         self.idf_dict = self.compute_idf_values()
         print('Done!\n')
 
+        # compute the bag of words embeddings
+        self.embedding = self.compute_embedding()
+
     def compute_tf_values(self, document: List[List[str]]):
         """
 
@@ -122,7 +125,7 @@ class TfIdf(EmbeddingAlgorithm):
             tf_idf_value = tf * self.idf_dict[word]
 
             # get the index of the current word and store the value in the embedding matrix
-            word_index = self.corpus.voc.word2index(word)
+            word_index = self.corpus.voc.word2index[word]
             embedding[0, word_index] = tf_idf_value
         return embedding
 
