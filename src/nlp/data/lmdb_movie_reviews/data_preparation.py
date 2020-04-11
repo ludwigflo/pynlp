@@ -1,4 +1,5 @@
 from nlp.text_embeddings.document_embeddings.bag_of_words import BagOfWords
+from nlp.text_embeddings.document_embeddings.tf_idf import TfIdf
 from nlp.data.corpus import Corpus
 import csv
 import os
@@ -100,15 +101,10 @@ def create_dataset(tsv_file_path: str, param_file: str, output_path: str):
 
 def compute_bag_of_words_embeddings(output_path: str, param_file: str) -> None:
     """
-
     Parameters
     ----------
     output_path: Path, in which the bag of words embeddings should be computed.
     param_file: Parameter file, which is needed to load the corpus.
-
-    Returns
-    -------
-
     """
 
     if not os.path.exists(output_path):
@@ -127,13 +123,37 @@ def compute_bag_of_words_embeddings(output_path: str, param_file: str) -> None:
     bow.save_object(output_path + embedding_name)
 
 
+def compute_tf_idf_embeddings(output_path: str, param_file: str) -> None:
+    """
+    Parameters
+    ----------
+    output_path: Path, in which the bag of words embeddings should be computed.
+    param_file: Parameter file, which is needed to load the corpus.
+    """
+
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+
+    # load a corpus
+    print('Loading the Corpus...\n')
+    corpus = Corpus('Loaded Corpus', param_file=param_file)
+    corpus_name = corpus.corpus_name
+
+    # compute the tf_idf embeddings for the corpus
+    tf_idf = TfIdf(corpus)
+
+    print('Saving the corpus...')
+    embedding_name = corpus_name.replace('.pickl', '.embd')
+    tf_idf.save_object(output_path + embedding_name)
+
+
 if __name__ == '__main__':
     tsv_file_path = 'testData.tsv'
     param_file = 'params.yaml'
-    output_path = 'test/'
+    output_path = 'tf_idf/'
 
     # compute_corpus(tsv_file_path, param_file, 'test')
     # create_dataset(tsv_file_path, param_file, output_path)
     # corpus = Corpus('Loaded Corpus', param_file=param_file)
-    compute_bag_of_words_embeddings(output_path, param_file)
-
+    # compute_bag_of_words_embeddings(output_path, param_file)
+    compute_tf_idf_embeddings(output_path, param_file)
